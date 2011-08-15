@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Ace Editor as dijit/Editor View Source Plugin</title>
+<link rel="stylesheet" href="../dijit/themes/claro/claro.css">
+<link rel="stylesheet" href="../dojox/editor/plugins/resources/css/StatusBar.css">
+<style type="text/css" media="screen">
+    body, html { width:100%; height:100%; margin:0; padding:0; overflow: hidden }
+    #main {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+</style>
+</head>
+<body class="claro">
+<div id="main"></div>
+<script src="../dojo/dojo.js"></script>
+<script>
+require({
+    baseUrl: '../',
+    isDebug: true,
+    packages: [
+        "dojo",
+        "dijit",
+        "dojox",
+        "dijit-ace"
+    ],
+    packagePaths: {
+        "ace/lib": [
+            {
+                name: "ace",
+                main: "ace"
+            }
+        ],
+        "pilot/lib": [
+            {
+                name: "pilot",
+                main: "index"
+            }
+        ]
+    },
+    paths: {
+        text: "text"
+    }
+}, [
+    "dojo",
+    "dijit/layout/BorderContainer",
+    "dijit/layout/ContentPane",
+    "dijit/Editor",
+    "dijit/_editor/plugins/ViewSource",
+    "dijit-ace/editor/plugins/ViewSourceAdvanced",
+    "dojo/domReady!"
+], function(dojo, BorderContainer, ContentPane, Editor) {
+    var mainContainer = new BorderContainer({
+        id: "mainContainer",
+        gutters: false,
+        style: "width: 100%; height: 100%"
+    }, dojo.byId('main'));
+
+    var topPane = new ContentPane({
+        content: document.title,
+        region: "top",
+        style: "overflow: hidden; background-color: #bbb"
+    });
+    
+    var editor = new Editor({
+        id: "editor",
+        title: "Editor Pane",
+        region: "center",
+        value: "<root>Foo <bar>edit</bar> <b>yay</b></root>",
+        style: "margin: 0; padding: 0; overflow: hidden",
+        extraPlugins: [
+            "|",
+            "viewSource",
+            { name: "viewSourceAdvanced", mode: "xml", theme: "twilight" }
+        ]
+    });
+    //editor.statusBar.set("value", "...status bar...");
+
+    var infoPane = new ContentPane({
+        title: "Document Info",
+        content: "Document Info Pane",
+        splitter: true,
+        region: "right",
+        style: "width: 200px; background-color: #ddd"
+    });
+
+    mainContainer.addChild(topPane);
+    mainContainer.addChild(editor);
+    mainContainer.addChild(infoPane);
+    mainContainer.startup();
+});
+</script>
+</body>
+</html>
